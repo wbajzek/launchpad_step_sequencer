@@ -11,7 +11,7 @@ describe LaunchpadStepSequencer do
 
   context 'when initialized' do
     it 'turns on the step number lights' do
-      expect(subject.launchpad_output.string).to eq(
+      expect(subject.launchpad_output.string).to match(
         subject.enabled_steps.collect { |step|
           midi_message % [
             described_class::CHANNEL_2_NOTE_ON,
@@ -25,17 +25,38 @@ describe LaunchpadStepSequencer do
 
   context 'when started' do
     let(:initial_step) { 0 }
+    let(:column_light_offset) {
+      described_class::COLUMN_OFFSETS[0]
+    }
 
     it 'starts on the first step' do
       expect(subject.current_step).to eq(initial_step)
     end
-    xit 'highlights the first step number light' do
+
+    it 'turns on the first step lights' do
+      expect(subject.launchpad_output.string).to match(
+        (0..7).to_a.collect { |row|
+          midi_message % [
+            described_class::CHANNEL_2_NOTE_ON,
+            column_light_offset + row,
+            described_class::MAX_VELOCITY
+          ]
+        }.join
+      )
     end
 
     xit 'starts any selected notes' do
     end
 
     context 'when advanced' do
+      let(:previous_column_light_offset) {
+        described_class::COLUMN_OFFSETS[0]
+      }
+
+      let(:column_light_offset) {
+        described_class::COLUMN_OFFSETS[1]
+      }
+
       before do
         subject.advance
       end
@@ -44,10 +65,28 @@ describe LaunchpadStepSequencer do
         expect(subject.current_step).to eq(initial_step + 1)
       end
 
-      xit 'unhighlights the first step number light' do
+      it 'unhighlights the first step number light' do
+        expect(subject.launchpad_output.string).to match(
+          (0..7).to_a.collect { |row|
+            midi_message % [
+              described_class::CHANNEL_2_NOTE_ON,
+              previous_column_light_offset + row,
+              described_class::MIN_VELOCITY
+            ]
+          }.join
+        )
       end
 
-      xit 'highlights the second step number light' do
+      it 'highlights the second step number light' do
+        expect(subject.launchpad_output.string).to match(
+          (0..7).to_a.collect { |row|
+            midi_message % [
+              described_class::CHANNEL_2_NOTE_ON,
+              column_light_offset + row,
+              described_class::MAX_VELOCITY
+            ]
+          }.join
+        )
       end
 
       xit 'stops any unselected notes' do
