@@ -108,6 +108,26 @@ describe LaunchpadStepSequencer do
     end
   end
 
+  context 'when the A button is pressed' do
+    xit 'transposes up a half step' do
+    end
+  end
+
+  context 'when the B button is pressed' do
+    xit 'transposes down a half step' do
+    end
+  end
+
+  context 'when the C button is pressed' do
+    xit 'moves sequence up a scale degree' do
+    end
+  end
+
+  context 'when the D button is pressed' do
+    xit 'moves sequence down a scale degree' do
+    end
+  end
+
   context 'when the E button is pressed' do
     xit 'scrolls up' do
     end
