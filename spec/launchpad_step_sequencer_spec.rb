@@ -73,13 +73,25 @@ describe LaunchpadStepSequencer do
   end
 
   context 'when a step button is pressed' do
+    let(:step) { 2 }
+
+    before do
+      subject.step_button_pressed(step)
+    end
+
     context 'when that step is enabled' do
-      xit 'disables the step' do
+      it 'disables the step' do
+        expect(subject.enabled_steps).not_to include(step)
       end
     end
 
     context 'when that step is disabled' do
-      xit 'enables the step' do
+      before do
+        subject.step_button_pressed(step) # again
+      end
+
+      it 'enables the step' do
+        expect(subject.enabled_steps).to include(step)
       end
     end
   end
