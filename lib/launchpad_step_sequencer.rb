@@ -52,17 +52,17 @@ class LaunchpadStepSequencer
   end
 
   def light_current_step
-    ROWS.times do |row|
+    step_lights.each do |light|
       launchpad_output.puts(CHANNEL_1_NOTE_ON,
-                            COLUMN_OFFSETS[row] + current_step,
+                            light,
                             HIGHLIGHT_VELOCITY)
     end
   end
 
   def unlight_current_step
-    ROWS.times do |row|
+    step_lights.each do |light|
       launchpad_output.puts(CHANNEL_1_NOTE_OFF,
-                            COLUMN_OFFSETS[row] + current_step,
+                            light,
                             MIN_VELOCITY)
     end
   end
@@ -134,5 +134,13 @@ class LaunchpadStepSequencer
 
   def midi_output
     @midi_output ||= StringIO.new
+  end
+
+  private
+
+  def step_lights
+    ROWS.times.collect { |row|
+      COLUMN_OFFSETS[row] + current_step
+    }
   end
 end
