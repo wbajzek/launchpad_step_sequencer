@@ -28,6 +28,20 @@ class LaunchpadStepSequencer
   attr_reader :enabled_steps
   attr_reader :enabled_notes
 
+  def self.run(tempo = 120.0)
+    sequencer = LaunchpadStepSequencer.new
+    sequencer.start
+    input_thread = Thread.new do
+    end
+    while (1)
+      sequencer.advance
+      sleep(60.0 / tempo)
+    end
+  ensure
+    sequencer.all_notes_off
+    Thread.kill(input_thread) if input_thread
+  end
+
   def initialize
     @current_step = -1 # will advance to 0 on start
     @steps = 8
@@ -134,6 +148,17 @@ class LaunchpadStepSequencer
 
   def midi_output
     @midi_output ||= StringIO.new
+  end
+
+  def all_notes_off
+    for i in 0..127
+      midi_output.puts(CHANNEL_1_NOTE_ON, i, MIN_VELOCITY)
+      midi_output.puts(CHANNEL_1_NOTE_OFF, i, MIN_VELOCITY)
+      launchpad_output.puts(CHANNEL_1_NOTE_ON, i, MIN_VELOCITY)
+      launchpad_output.puts(CHANNEL_1_NOTE_OFF, i, MIN_VELOCITY)
+      launchpad_output.puts(CHANNEL_2_NOTE_ON, i, MIN_VELOCITY)
+      launchpad_output.puts(CHANNEL_2_NOTE_OFF, i, MIN_VELOCITY)
+    end
   end
 
   private
