@@ -61,13 +61,25 @@ describe LaunchpadStepSequencer do
   end
 
   context 'when a note button is pressed' do
+    let(:note) { 35 }
+
+    before do
+      subject.note_button_pressed(note)
+    end
+
     context 'when that note is disabled' do
-      xit 'enables the note' do
+      it 'enables the note' do
+        expect(subject.enabled_notes).to include(note)
       end
     end
 
     context 'when that note is enabled' do
-      xit 'disables the note' do
+      before do
+        subject.note_button_pressed(note) #again
+      end
+
+      it 'disables the note' do
+        expect(subject.enabled_notes).not_to include(note)
       end
     end
   end
