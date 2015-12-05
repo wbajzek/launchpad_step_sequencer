@@ -90,7 +90,7 @@ class LaunchpadStepSequencer
     if @enabled_steps.include?(step)
       @enabled_steps.delete(step)
     else
-      @enabled_steps.push(step)
+      @enabled_steps.insert(step, step)
     end
   end
 
@@ -98,7 +98,7 @@ class LaunchpadStepSequencer
     if @enabled_notes.include?(note)
       @enabled_notes.delete(note)
     else
-      @enabled_notes.push(note)
+      @enabled_notes.insert(note, note)
     end
   end
 
