@@ -8,7 +8,10 @@ describe LaunchpadStepSequencer do
   end
 
   context 'when started' do
-    xit 'starts on the first step' do
+    let(:initial_step) { 0 }
+
+    it 'starts on the first step' do
+      expect(subject.current_step).to eq(initial_step)
     end
 
     xit 'turns on the step number lights' do
@@ -21,6 +24,14 @@ describe LaunchpadStepSequencer do
     end
 
     context 'when advanced' do
+      before do
+        subject.advance
+      end
+
+      it 'moves to the next step' do
+        expect(subject.current_step).to eq(initial_step + 1)
+      end
+
       xit 'unhighlights the first step number light' do
       end
 
@@ -31,7 +42,14 @@ describe LaunchpadStepSequencer do
       end
 
       context 'from the last step' do
-        xit 'returns to the first step' do
+        before do
+          7.times do
+            subject.advance
+          end
+        end
+
+        it 'returns to the first step' do
+          expect(subject.current_step).to eq(initial_step)
         end
       end
     end

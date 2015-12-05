@@ -1,3 +1,3 @@
-module LaunchpadStepSequencer
+class LaunchpadStepSequencer
   VERSION = "0.1.0"
 end
