@@ -2,9 +2,25 @@ require 'spec_helper'
 
 describe LaunchpadStepSequencer do
   subject { described_class.new }
+  let(:midi_message) { "%i\n%i\n%i\n" }
 
   it 'has a version number' do
     expect(LaunchpadStepSequencer::VERSION).not_to be nil
+  end
+
+
+  context 'when initialized' do
+    it 'turns on the step number lights' do
+      expect(subject.launchpad_output.string).to eq(
+        subject.enabled_steps.collect { |step|
+          midi_message % [
+            described_class::CHANNEL_2_NOTE_ON,
+            described_class::LIGHT_OFFSET + step,
+            described_class::MAX_VELOCITY
+          ]
+        }.join
+      )
+    end
   end
 
   context 'when started' do
@@ -13,10 +29,6 @@ describe LaunchpadStepSequencer do
     it 'starts on the first step' do
       expect(subject.current_step).to eq(initial_step)
     end
-
-    xit 'turns on the step number lights' do
-    end
-
     xit 'highlights the first step number light' do
     end
 
