@@ -44,7 +44,7 @@ describe LaunchpadStepSequencer do
           midi_message % [
             described_class::CHANNEL_2_NOTE_ON,
             column_light_offset + row,
-            described_class::MAX_VELOCITY
+            described_class::HIGHLIGHT_VELOCITY
           ]
         }.join
       )
@@ -95,7 +95,7 @@ describe LaunchpadStepSequencer do
             midi_message % [
               described_class::CHANNEL_2_NOTE_ON,
               column_light_offset + row,
-              described_class::MAX_VELOCITY
+              described_class::HIGHLIGHT_VELOCITY
             ]
           }.join
         )

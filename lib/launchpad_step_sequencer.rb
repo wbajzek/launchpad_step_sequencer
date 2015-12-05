@@ -12,6 +12,7 @@ class LaunchpadStepSequencer
   LIGHT_OFFSET = 104
 
   MIN_VELOCITY = 0
+  HIGHLIGHT_VELOCITY = 100
   MAX_VELOCITY = 127
 
   COLUMN_OFFSETS = [
@@ -43,7 +44,7 @@ class LaunchpadStepSequencer
     ROWS.times do |row|
       launchpad_output.puts(CHANNEL_2_NOTE_ON,
                             COLUMN_OFFSETS[current_step] + row,
-                            MAX_VELOCITY)
+                            HIGHLIGHT_VELOCITY)
     end
   end
 
