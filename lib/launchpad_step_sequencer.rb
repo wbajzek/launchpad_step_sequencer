@@ -23,7 +23,7 @@ class LaunchpadStepSequencer
   attr_reader :enabled_notes
 
   def initialize
-    @current_step = 0
+    @current_step = -1 # will advance to 0 on start
     @steps = 8
     @enabled_steps = (0..@steps-1).to_a
     @enabled_notes = []
@@ -55,11 +55,29 @@ class LaunchpadStepSequencer
     end
   end
 
+  def start
+    advance
+  end
+
   def advance
+    stop_current_step_notes
     unlight_current_step
     @current_step += 1
     @current_step = 0 if @current_step == @steps
+    start_current_step_notes
     light_current_step
+  end
+
+  def start_current_step_notes
+    midi_output.puts(CHANNEL_1_NOTE_ON,
+                     2,
+                     MAX_VELOCITY)
+  end
+
+  def stop_current_step_notes
+    midi_output.puts(CHANNEL_1_NOTE_ON,
+                     2,
+                     MIN_VELOCITY)
   end
 
   def step_button_pressed(step)

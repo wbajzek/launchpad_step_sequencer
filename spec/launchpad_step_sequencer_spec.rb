@@ -28,6 +28,11 @@ describe LaunchpadStepSequencer do
     let(:column_light_offset) {
       described_class::COLUMN_OFFSETS[0]
     }
+    let(:note) { 2 }
+
+    before do
+      subject.start
+    end
 
     it 'starts on the first step' do
       expect(subject.current_step).to eq(initial_step)
@@ -45,7 +50,14 @@ describe LaunchpadStepSequencer do
       )
     end
 
-    xit 'starts any selected notes' do
+    it 'starts any selected notes' do
+      expect(subject.midi_output.string).to match(
+        midi_message % [
+          described_class::CHANNEL_1_NOTE_ON,
+          note,
+          described_class::MAX_VELOCITY
+        ]
+      )
     end
 
     context 'when advanced' do
@@ -89,7 +101,14 @@ describe LaunchpadStepSequencer do
         )
       end
 
-      xit 'stops any unselected notes' do
+      it 'stops any unselected notes' do
+        expect(subject.midi_output.string).to match(
+          midi_message % [
+            described_class::CHANNEL_1_NOTE_ON,
+            note,
+            described_class::MIN_VELOCITY
+          ]
+        )
       end
 
       context 'from the last step' do
