@@ -41,4 +41,48 @@ describe LaunchpadStepSequencer do
       end
     end
   end
+
+  context 'when a note button is pressed' do
+    context 'when that note is disabled' do
+      xit 'enables the note' do
+      end
+    end
+
+    context 'when that note is enabled' do
+      xit 'disables the note' do
+      end
+    end
+  end
+
+  context 'when a step button is pressed' do
+    context 'when that step is enabled' do
+      xit 'disables the step' do
+      end
+    end
+
+    context 'when that step is disabled' do
+      xit 'enables the step' do
+      end
+    end
+  end
+
+  context 'when the E button is pressed' do
+    xit 'scrolls up' do
+    end
+  end
+
+  context 'when the F button is pressed' do
+    xit 'scrolls down' do
+    end
+  end
+
+  context 'when the G button is pressed' do
+    xit 'scrolls left' do
+    end
+  end
+
+  context 'when the H button is pressed' do
+    xit 'scrolls right' do
+    end
+  end
 end
