@@ -19,6 +19,10 @@ class LaunchpadStepSequencer
     0, 16, 32, 48, 64, 80, 96, 112
   ]
 
+  SCALE = [
+    48, 50, 52, 53, 55, 57, 59, 60
+  ].reverse
+
   attr_reader :current_step
   attr_reader :enabled_steps
   attr_reader :enabled_notes
@@ -36,6 +40,14 @@ class LaunchpadStepSequencer
     @enabled_steps.each do |step|
       launchpad_output.puts(CHANNEL_2_NOTE_ON,
                             LIGHT_OFFSET + step,
+                            MAX_VELOCITY)
+    end
+  end
+
+  def light_notes
+    @enabled_notes.each do |note|
+      launchpad_output.puts(CHANNEL_1_NOTE_ON,
+                            note,
                             MAX_VELOCITY)
     end
   end
@@ -70,20 +82,29 @@ class LaunchpadStepSequencer
     unlight_current_step
     @current_step += 1
     @current_step = 0 if @current_step == @steps
-    start_current_step_notes
     light_current_step
+    light_notes
+    start_current_step_notes
   end
 
   def start_current_step_notes
-    midi_output.puts(CHANNEL_1_NOTE_ON,
-                     2,
-                     MAX_VELOCITY)
+    ROWS.times do |row|
+      if @enabled_notes.include?(COLUMN_OFFSETS[@current_step] + row)
+        midi_output.puts(CHANNEL_1_NOTE_ON,
+                         scale_note(COLUMN_OFFSETS[@current_step]),
+                         MAX_VELOCITY)
+      end
+    end
   end
 
   def stop_current_step_notes
-    midi_output.puts(CHANNEL_1_NOTE_ON,
-                     2,
-                     MIN_VELOCITY)
+    ROWS.times do |row|
+      if @enabled_notes.include?(COLUMN_OFFSETS[@current_step] + row)
+        midi_output.puts(CHANNEL_1_NOTE_ON,
+                         scale_note(COLUMN_OFFSETS[@current_step]),
+                         MIN_VELOCITY)
+      end
+    end
   end
 
   def step_button_pressed(step)
@@ -100,6 +121,10 @@ class LaunchpadStepSequencer
     else
       @enabled_notes.insert(note, note)
     end
+  end
+
+  def scale_note(note)
+    SCALE[COLUMN_OFFSETS.index(note)]
   end
 
   def launchpad_output

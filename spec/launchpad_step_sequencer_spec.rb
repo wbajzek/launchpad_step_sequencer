@@ -31,6 +31,7 @@ describe LaunchpadStepSequencer do
     let(:note) { 2 }
 
     before do
+      subject.enabled_notes << note
       subject.start
     end
 
@@ -54,7 +55,9 @@ describe LaunchpadStepSequencer do
       expect(subject.midi_output.string).to match(
         midi_message % [
           described_class::CHANNEL_1_NOTE_ON,
-          note,
+          subject.scale_note(
+            described_class::COLUMN_OFFSETS[initial_step]
+          ),
           described_class::MAX_VELOCITY
         ]
       )
@@ -105,7 +108,9 @@ describe LaunchpadStepSequencer do
         expect(subject.midi_output.string).to match(
           midi_message % [
             described_class::CHANNEL_1_NOTE_ON,
-            note,
+            subject.scale_note(
+              described_class::COLUMN_OFFSETS[initial_step]
+            ),
             described_class::MIN_VELOCITY
           ]
         )
@@ -145,7 +150,9 @@ describe LaunchpadStepSequencer do
         expect(subject.midi_output.string).to match(
           midi_message % [
             described_class::CHANNEL_1_NOTE_ON,
-            note,
+            subject.scale_note(
+              described_class::COLUMN_OFFSETS[initial_step]
+            ),
             described_class::MIN_VELOCITY
           ]
         )
