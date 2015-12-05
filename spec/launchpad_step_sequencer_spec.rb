@@ -125,7 +125,20 @@ describe LaunchpadStepSequencer do
     end
 
     context 'when stopped' do
-      xit 'unhighlights the current step number light' do
+      before do
+        subject.stop
+      end
+
+      it 'unhighlights the current step number light' do
+        expect(subject.launchpad_output.string).to match(
+          (0..7).to_a.collect { |row|
+            midi_message % [
+              described_class::CHANNEL_2_NOTE_ON,
+              column_light_offset + row,
+              described_class::MIN_VELOCITY
+            ]
+          }.join
+        )
       end
     end
   end
