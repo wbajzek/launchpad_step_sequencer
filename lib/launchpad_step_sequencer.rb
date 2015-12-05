@@ -61,6 +61,7 @@ class LaunchpadStepSequencer
 
   def stop
     unlight_current_step
+    stop_current_step_notes
   end
 
   def advance

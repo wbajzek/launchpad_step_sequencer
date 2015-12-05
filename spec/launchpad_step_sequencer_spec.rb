@@ -140,6 +140,16 @@ describe LaunchpadStepSequencer do
           }.join
         )
       end
+
+      it 'stops any current step notes' do
+        expect(subject.midi_output.string).to match(
+          midi_message % [
+            described_class::CHANNEL_1_NOTE_ON,
+            note,
+            described_class::MIN_VELOCITY
+          ]
+        )
+      end
     end
   end
 
