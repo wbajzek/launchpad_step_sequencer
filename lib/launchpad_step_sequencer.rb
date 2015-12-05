@@ -1,4 +1,5 @@
 require "launchpad_step_sequencer/version"
+require "unimidi"
 
 class LaunchpadStepSequencer
   ROWS = 8
@@ -32,8 +33,6 @@ class LaunchpadStepSequencer
     @steps = 8
     @enabled_steps = (0..@steps-1).to_a
     @enabled_notes = []
-    step_lights_on
-    light_current_step
   end
 
   def step_lights_on
@@ -54,21 +53,23 @@ class LaunchpadStepSequencer
 
   def light_current_step
     ROWS.times do |row|
-      launchpad_output.puts(CHANNEL_2_NOTE_ON,
-                            COLUMN_OFFSETS[current_step] + row,
+      launchpad_output.puts(CHANNEL_1_NOTE_ON,
+                            COLUMN_OFFSETS[row] + current_step,
                             HIGHLIGHT_VELOCITY)
     end
   end
 
   def unlight_current_step
     ROWS.times do |row|
-      launchpad_output.puts(CHANNEL_2_NOTE_ON,
-                            COLUMN_OFFSETS[current_step] + row,
+      launchpad_output.puts(CHANNEL_1_NOTE_OFF,
+                            COLUMN_OFFSETS[row] + current_step,
                             MIN_VELOCITY)
     end
   end
 
   def start
+    step_lights_on
+    light_current_step
     advance
   end
 
@@ -128,7 +129,7 @@ class LaunchpadStepSequencer
   end
 
   def launchpad_output
-    @launchpad_output ||= StringIO.new
+    @launchpad_output ||= UniMIDI::Output.all.select { |d| d.name.match /Launchpad/ }.first
   end
 
   def midi_output

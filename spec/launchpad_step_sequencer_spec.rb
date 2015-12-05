@@ -3,13 +3,26 @@ require 'spec_helper'
 describe LaunchpadStepSequencer do
   subject { described_class.new }
   let(:midi_message) { "%i\n%i\n%i\n" }
+  let(:launchpad_midi) { StringIO.new }
+
+  before do
+    allow(subject).to receive(:launchpad_output). \
+      and_return( launchpad_midi )
+  end
 
   it 'has a version number' do
     expect(LaunchpadStepSequencer::VERSION).not_to be nil
   end
 
+  context 'when started' do
+    let(:initial_step) { 0 }
+    let(:note) { 2 }
 
-  context 'when initialized' do
+    before do
+      subject.enabled_notes << note
+      subject.start
+    end
+
     it 'turns on the step number lights' do
       expect(subject.launchpad_output.string).to match(
         subject.enabled_steps.collect { |step|
@@ -21,20 +34,6 @@ describe LaunchpadStepSequencer do
         }.join
       )
     end
-  end
-
-  context 'when started' do
-    let(:initial_step) { 0 }
-    let(:column_light_offset) {
-      described_class::COLUMN_OFFSETS[0]
-    }
-    let(:note) { 2 }
-
-    before do
-      subject.enabled_notes << note
-      subject.start
-    end
-
     it 'starts on the first step' do
       expect(subject.current_step).to eq(initial_step)
     end
@@ -43,8 +42,8 @@ describe LaunchpadStepSequencer do
       expect(subject.launchpad_output.string).to match(
         (0..7).to_a.collect { |row|
           midi_message % [
-            described_class::CHANNEL_2_NOTE_ON,
-            column_light_offset + row,
+            described_class::CHANNEL_1_NOTE_ON,
+            described_class::COLUMN_OFFSETS[row],
             described_class::HIGHLIGHT_VELOCITY
           ]
         }.join
@@ -84,8 +83,8 @@ describe LaunchpadStepSequencer do
         expect(subject.launchpad_output.string).to match(
           (0..7).to_a.collect { |row|
             midi_message % [
-              described_class::CHANNEL_2_NOTE_ON,
-              previous_column_light_offset + row,
+              described_class::CHANNEL_1_NOTE_OFF,
+              described_class::COLUMN_OFFSETS[row] - 1,
               described_class::MIN_VELOCITY
             ]
           }.join
@@ -96,8 +95,8 @@ describe LaunchpadStepSequencer do
         expect(subject.launchpad_output.string).to match(
           (0..7).to_a.collect { |row|
             midi_message % [
-              described_class::CHANNEL_2_NOTE_ON,
-              column_light_offset + row,
+              described_class::CHANNEL_1_NOTE_ON,
+              described_class::COLUMN_OFFSETS[row] - 1,
               described_class::HIGHLIGHT_VELOCITY
             ]
           }.join
@@ -138,8 +137,8 @@ describe LaunchpadStepSequencer do
         expect(subject.launchpad_output.string).to match(
           (0..7).to_a.collect { |row|
             midi_message % [
-              described_class::CHANNEL_2_NOTE_ON,
-              column_light_offset + row,
+              described_class::CHANNEL_1_NOTE_OFF,
+              described_class::COLUMN_OFFSETS[row] - 1,
               described_class::MIN_VELOCITY
             ]
           }.join
