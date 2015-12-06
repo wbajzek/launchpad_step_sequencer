@@ -73,7 +73,7 @@ class LaunchpadStepSequencer
 
   def handle_input
     with_loop do |msg|
-      if msg[:data][2] > 0
+      if msg[:data][2] == 0
         case msg[:data][0]
         when CHANNEL_1_NOTE_ON then note_button_pressed(msg[:data][1])
         when CHANNEL_2_NOTE_ON then \
