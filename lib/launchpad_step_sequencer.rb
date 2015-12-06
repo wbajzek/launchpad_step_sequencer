@@ -30,8 +30,10 @@ class LaunchpadStepSequencer
 
   def self.run(tempo = 120.0)
     sequencer = LaunchpadStepSequencer.new
+    sequencer.midi_output # prompt for output
     sequencer.start
     input_thread = Thread.new do
+      sequencer.handle_input
     end
     while (1)
       sequencer.advance
