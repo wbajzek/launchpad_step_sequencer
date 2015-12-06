@@ -4,10 +4,13 @@ describe LaunchpadStepSequencer do
   subject { described_class.new }
   let(:midi_message) { "%i\n%i\n%i\n" }
   let(:launchpad_midi) { StringIO.new }
+  let(:midi) { StringIO.new }
 
   before do
     allow(subject).to receive(:launchpad_output). \
       and_return( launchpad_midi )
+    allow(subject).to receive(:midi_output). \
+      and_return( midi )
   end
 
   it 'has a version number' do
@@ -16,10 +19,10 @@ describe LaunchpadStepSequencer do
 
   context 'when started' do
     let(:initial_step) { 0 }
-    let(:note) { 2 }
+    let(:note) { 0 }
 
     before do
-      subject.enabled_notes << note
+      subject.note_button_pressed(note)
       subject.start
     end
 
@@ -34,6 +37,7 @@ describe LaunchpadStepSequencer do
         }.join
       )
     end
+
     it 'starts on the first step' do
       expect(subject.current_step).to eq(initial_step)
     end
@@ -43,7 +47,7 @@ describe LaunchpadStepSequencer do
         (0..7).to_a.collect { |row|
           midi_message % [
             described_class::CHANNEL_1_NOTE_ON,
-            described_class::COLUMN_OFFSETS[row],
+            described_class::ROW_OFFSETS[row],
             described_class::HIGHLIGHT_VELOCITY
           ]
         }.join
@@ -55,7 +59,7 @@ describe LaunchpadStepSequencer do
         midi_message % [
           described_class::CHANNEL_1_NOTE_ON,
           subject.scale_note(
-            described_class::COLUMN_OFFSETS[initial_step]
+            described_class::ROW_OFFSETS[initial_step]
           ),
           described_class::MAX_VELOCITY
         ]
@@ -64,11 +68,11 @@ describe LaunchpadStepSequencer do
 
     context 'when advanced' do
       let(:previous_column_light_offset) {
-        described_class::COLUMN_OFFSETS[0]
+        described_class::ROW_OFFSETS[0]
       }
 
       let(:column_light_offset) {
-        described_class::COLUMN_OFFSETS[1]
+        described_class::ROW_OFFSETS[1]
       }
 
       before do
@@ -84,7 +88,7 @@ describe LaunchpadStepSequencer do
           (0..7).to_a.collect { |row|
             midi_message % [
               described_class::CHANNEL_1_NOTE_OFF,
-              described_class::COLUMN_OFFSETS[row] - 1,
+              described_class::ROW_OFFSETS[row] - 1,
               described_class::MIN_VELOCITY
             ]
           }.join
@@ -96,7 +100,7 @@ describe LaunchpadStepSequencer do
           (0..7).to_a.collect { |row|
             midi_message % [
               described_class::CHANNEL_1_NOTE_ON,
-              described_class::COLUMN_OFFSETS[row] - 1,
+              described_class::ROW_OFFSETS[row] - 1,
               described_class::HIGHLIGHT_VELOCITY
             ]
           }.join
@@ -108,7 +112,7 @@ describe LaunchpadStepSequencer do
           midi_message % [
             described_class::CHANNEL_1_NOTE_ON,
             subject.scale_note(
-              described_class::COLUMN_OFFSETS[initial_step]
+              described_class::ROW_OFFSETS[initial_step]
             ),
             described_class::MIN_VELOCITY
           ]
@@ -138,7 +142,7 @@ describe LaunchpadStepSequencer do
           (0..7).to_a.collect { |row|
             midi_message % [
               described_class::CHANNEL_1_NOTE_OFF,
-              described_class::COLUMN_OFFSETS[row] - 1,
+              described_class::ROW_OFFSETS[row] - 1,
               described_class::MIN_VELOCITY
             ]
           }.join
@@ -150,7 +154,7 @@ describe LaunchpadStepSequencer do
           midi_message % [
             described_class::CHANNEL_1_NOTE_ON,
             subject.scale_note(
-              described_class::COLUMN_OFFSETS[initial_step]
+              described_class::ROW_OFFSETS[initial_step]
             ),
             described_class::MIN_VELOCITY
           ]
