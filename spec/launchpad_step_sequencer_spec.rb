@@ -100,7 +100,7 @@ describe LaunchpadStepSequencer do
           (0..7).to_a.collect { |row|
             midi_message % [
               described_class::CHANNEL_1_NOTE_ON,
-              described_class::ROW_OFFSETS[row] - 1,
+              described_class::ROW_OFFSETS[row],
               described_class::HIGHLIGHT_VELOCITY
             ]
           }.join

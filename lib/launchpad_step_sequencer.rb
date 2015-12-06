@@ -36,8 +36,8 @@ class LaunchpadStepSequencer
       sequencer.handle_input
     end
     while (1)
-      sequencer.advance
       sleep(60.0 / tempo)
+      sequencer.advance
     end
   ensure
     sequencer.all_notes_off
@@ -53,7 +53,6 @@ class LaunchpadStepSequencer
 
   def start
     step_lights_on
-    light_current_step
     advance
   end
 
