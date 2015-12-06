@@ -130,6 +130,31 @@ describe LaunchpadStepSequencer do
           expect(subject.current_step).to eq(initial_step)
         end
       end
+
+      context 'when the next step is disabled' do
+        before do
+          subject.enabled_steps.delete(2)
+          subject.advance
+        end
+
+        it 'proceeds to the next enabled step' do
+          expect(subject.current_step).to eq(initial_step + 3)
+        end
+      end
+
+
+      context 'and that next step is the last step' do
+        before do
+          6.times do
+            subject.enabled_steps.delete(7)
+            subject.advance
+          end
+        end
+
+        it 'returns to the first step' do
+          expect(subject.current_step).to eq(initial_step)
+        end
+      end
     end
 
     context 'when stopped' do

@@ -65,7 +65,11 @@ class LaunchpadStepSequencer
     stop_current_step_notes
     unlight_current_step
     @current_step += 1
-    @current_step = 0 if @current_step == @steps
+    until @enabled_steps.include?(@current_step)
+      #FIXME add protection against infinite loops
+      @current_step += 1
+      @current_step = 0 if @current_step >= @steps
+    end
     start_current_step_notes
     light_current_step
     light_notes
