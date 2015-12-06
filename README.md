@@ -2,7 +2,6 @@
 
 This is a very basic midi step sequencer designed to run on the Novation
 Launchpad.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -21,7 +20,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    $ bin/console
+    2.1.6 :001 > LaunchpadStepSequencer.run
+
+Then choose your midi output device and have fun.
+
 
 ## Development
 
