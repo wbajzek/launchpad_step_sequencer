@@ -129,11 +129,25 @@ class LaunchpadStepSequencer
     end
   end
 
+  def light_step_button(light)
+    launchpad_output.puts(CHANNEL_2_NOTE_ON,
+                          LIGHT_OFFSET + light,
+                          MAX_VELOCITY)
+  end
+
+  def unlight_step_button(light)
+    launchpad_output.puts(CHANNEL_2_NOTE_ON,
+                          LIGHT_OFFSET + light,
+                          MIN_VELOCITY)
+  end
+
   def step_button_pressed(step)
     if @enabled_steps.include?(step)
       @enabled_steps.delete(step)
+      unlight_step_button(step)
     else
       @enabled_steps.insert(step, step)
+      light_step_button(step)
     end
   end
 

@@ -198,6 +198,16 @@ describe LaunchpadStepSequencer do
       it 'disables the step' do
         expect(subject.enabled_steps).not_to include(step)
       end
+
+      it 'unlights the step light' do
+        expect(subject.launchpad_output.string).to match(
+          midi_message % [
+            described_class::CHANNEL_2_NOTE_ON,
+            described_class::LIGHT_OFFSET + step,
+            described_class::MIN_VELOCITY
+          ]
+        )
+      end
     end
 
     context 'when that step is disabled' do
@@ -207,6 +217,16 @@ describe LaunchpadStepSequencer do
 
       it 'enables the step' do
         expect(subject.enabled_steps).to include(step)
+      end
+
+      it 'lights the step light' do
+        expect(subject.launchpad_output.string).to match(
+          midi_message % [
+            described_class::CHANNEL_2_NOTE_ON,
+            described_class::LIGHT_OFFSET + step,
+            described_class::MAX_VELOCITY
+          ]
+        )
       end
     end
   end
